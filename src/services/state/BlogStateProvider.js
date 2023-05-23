@@ -1,9 +1,9 @@
 import { createContext, useState } from "react"
-import { STORED_STATE_NAME } from "../../constants/stringConstants";
+import { INITIAL_STATE, STORED_STATE_NAME } from "../../constants/stringConstants";
 
 const getStoredState = () => {
   const storedState = localStorage.getItem(STORED_STATE_NAME);
-  if (!storedState) return {};
+  if (!storedState) return INITIAL_STATE;
   return JSON.parse(storedState);
 }
 

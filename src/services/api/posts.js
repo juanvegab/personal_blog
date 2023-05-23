@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { DEFAULT_POST_OBJECT, INITIAL_STATE } from "../../constants/stringConstants";
+import { DEFAULT_POST_OBJECT } from "../../constants/stringConstants";
 import { BlogContext } from "../state/BlogStateProvider";
 
 // This is a simulation of an API Request
@@ -14,12 +14,10 @@ const usePostsRequests = () => {
 
   const { handleBlogUpdate, blog } = useContext(BlogContext);
 
-  const getNewPostId = () => {
-    return blog.posts[blog.posts.length] + 1;
-  }
+  const getNewPostId = () => blog.posts[blog.posts.length - 1].id + 1;
 
   const getAllPosts = () => {
-    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, INITIAL_STATE));
+    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, blog));
     handleBlogUpdate({
       ...blog,
       isLoadingPosts: true,
@@ -62,9 +60,7 @@ const usePostsRequests = () => {
   }
 
   const editPost = (post) => {
-    let selectedPost = blog.posts.find((p) => `${p.id}` === `${post.id}`);
-    selectedPost = {...selectedPost, ...post};
-    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, { post: selectedPost }));
+    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, { post }));
     handleBlogUpdate({
       ...blog,
       isLoadingFormPost: true,
@@ -72,15 +68,47 @@ const usePostsRequests = () => {
     });
 
     promise.then(({ post }) => {
-      let newPosts = [...blog.posts];
-      const editedPostIndex = newPosts.findIndex(p => p.id === post.id);
-      newPosts[editedPostIndex] = post;
-      console.log("newPosts", newPosts);
       handleBlogUpdate({
         ...blog,
-        posts: newPosts,
+        posts: [...blog.posts.map(p => p.id === post.id ? post : p)],
         isLoadingFormPost: false,
         formPost: post,
+      });
+    });
+  }
+
+  const createPost = (post) => {
+    console.log(getNewPostId())
+    const newPost = {...post, id: getNewPostId()};
+    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, { post: newPost }));
+    handleBlogUpdate({
+      ...blog,
+      isLoadingFormPost: true,
+      formPost: newPost,
+    });
+
+    promise.then(({ post }) => {
+      handleBlogUpdate({
+        ...blog,
+        posts: [...blog.posts, newPost],
+        isLoadingFormPost: false,
+        formPost: post,
+      });
+    });
+  }
+
+  const deletePost = (id) => {
+    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, {}));
+    handleBlogUpdate({
+      ...blog,
+      isLoadingPosts: true,
+    });
+
+    promise.then(() => {
+      handleBlogUpdate({
+        ...blog,
+        posts: [...blog.posts.filter(p => p.id !== id)],
+        isLoadingPosts: false,
       });
     });
   }
@@ -95,6 +123,8 @@ const usePostsRequests = () => {
 
   return {
     editPost,
+    createPost,
+    deletePost,
     getAllPosts,
     getPostById,
     loadFormPost,

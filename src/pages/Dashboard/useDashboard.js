@@ -3,7 +3,7 @@ import { usePostsRequests } from "../../services/api/posts";
 import { BlogContext } from "../../services/state/BlogStateProvider";
 
 const useDashboard = () => {
-  const { getAllPosts } = usePostsRequests();
+  const { getAllPosts, deletePost } = usePostsRequests();
   const { blog } = useContext(BlogContext);
   
   useEffect(() => {
@@ -13,7 +13,8 @@ const useDashboard = () => {
 
   return {
     posts: blog.posts,
-    isLoading: blog.postsLoading,
+    isLoading: blog.isLoadingPosts,
+    deletePost: deletePost,
   };
 }
 

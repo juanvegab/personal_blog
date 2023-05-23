@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useDashboard } from "./useDashboard";
 
 const Dashboard = () => {
-  const { isLoading, posts } =  useDashboard();
+  const { isLoading, posts, deletePost } =  useDashboard();
 
   return (
     <div className="page-posts-list">
@@ -11,6 +11,7 @@ const Dashboard = () => {
         <table>
           <thead>
             <tr>
+              <td></td>
               <td></td>
               <td></td>
               <td>Id</td>
@@ -26,6 +27,7 @@ const Dashboard = () => {
               <tr key={`table_row_${id}`}>
                 <td><Link to={`/blog/${id}`} target="blank">Open</Link></td>
                 <td><Link to={`edit/${id}`}>Edit</Link></td>
+                <td><button onClick={() => deletePost(id)}>Delete</button></td>
                 <td>{id}</td>
                 <td>{date}</td>
                 <td>{featuredImage}</td>

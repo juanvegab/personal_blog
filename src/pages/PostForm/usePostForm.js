@@ -38,7 +38,7 @@ const usePostForm = () => {
       redirect("/dashboard");
     } else {
       console.log("CREATE: ", post);
-      createPost();
+      createPost(post);
       alert("Post successfully created.")
       redirect("/dashboard");
     }
