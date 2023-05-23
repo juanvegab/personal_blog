@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import './styles.css';
 
-const BlogsLogo = () => {
+const BlogsLogo = ({ isWhite = false }) => {
+  const logoURL = isWhite ? "../assets/logo_white.svg" : "../assets/logo.svg";
   return (
     <Link to="/" className="component-blogs-logo">
-      <img src="../assets/logo.svg" alt="Blog Logo"/>
+      <img src={logoURL} alt="Blog Logo"/>
     </Link>
   );
 }

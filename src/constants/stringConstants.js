@@ -12,7 +12,7 @@ export const INITIAL_STATE = {
       },
       date: "2023-05-21",
       content: "<p>Wine tasting is an <em>art</em> that allows you to fully appreciate the flavors, aromas, and nuances of different wines. Join us on a journey to explore the intricacies of wine tasting and learn how to identify various <strong>tasting notes</strong>.</p>",
-      featuredImage: "https://source.unsplash.com/800x600/?wine",
+      featuredImage: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?fit=crop&w=1200&h=800",
       tags: [
         "wine",
         "tasting",

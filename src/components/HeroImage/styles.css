@@ -1,0 +1,10 @@
+.hero-image {
+  border-radius: 40px;
+  overflow: hidden;
+  max-height: 400px;
+}
+
+.hero-image img {
+  display: block;
+  width: 100%;
+}

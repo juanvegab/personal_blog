@@ -113,6 +113,26 @@ const usePostsRequests = () => {
     });
   }
 
+  const getLatestNumberPost = () => {
+    const NUMBER_OF_LATEST_POSTS = 6;
+    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, {
+      posts: blog.posts.slice(NUMBER_OF_LATEST_POSTS*-1)
+    }));
+    handleBlogUpdate({
+      ...blog,
+      isLoadingLatestPosts: true,
+      latestPosts: [],
+    });
+
+    promise.then((response) => {
+      handleBlogUpdate({
+        ...blog,
+        isLoadingLatestPosts: false,
+        latestPosts: response.posts,
+      });
+    });
+  };
+
   const cleanFormPost = (isLoading = false) => {
     handleBlogUpdate({
       ...blog,
@@ -129,6 +149,7 @@ const usePostsRequests = () => {
     getPostById,
     loadFormPost,
     cleanFormPost,
+    getLatestNumberPost,
   }
 }
 
