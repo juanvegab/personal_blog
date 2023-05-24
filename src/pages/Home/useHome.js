@@ -12,6 +12,7 @@ const useHome = () => {
 
   return {
     posts: blog.latestPosts,
+    featuredPost: blog.featuredPost,
     isLoading: blog.isLoadingLatestPosts,
   };
 }

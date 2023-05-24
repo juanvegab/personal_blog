@@ -5,7 +5,7 @@ const HeroImage = ({ imageURL, altText, redirectTo }) => {
 
   const heroComponent = (
     <div className="hero-image">
-      <img src={imageURL} alt={altText} />
+      <img className="object-center" src={imageURL} alt={altText} />
     </div>
   );
 

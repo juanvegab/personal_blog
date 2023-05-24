@@ -2,42 +2,42 @@ import { useContext } from "react";
 import { DEFAULT_POST_OBJECT } from "../../constants/stringConstants";
 import { BlogContext } from "../state/BlogStateProvider";
 
-// This is a simulation of an API Request
-const resolveResponseInSomeTime = (resolve, value) => {
-  const sometimeLater = Math.random() * (1000 - 2000) + 1000;
-  setTimeout(() => {
-    resolve(value)
-  }, sometimeLater);
+const sometimeLater = Math.random() * (1000 - 2000) + 1000;
+
+// This is a simulation of an API Request to a server
+// It will help to visualize the spinners on the site
+const delayRequest = (value) => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(value), sometimeLater);
+  });
 }
 
 const usePostsRequests = () => {
-
   const { handleBlogUpdate, blog } = useContext(BlogContext);
 
   const getNewPostId = () => blog.posts[blog.posts.length - 1].id + 1;
 
   const getAllPosts = () => {
-    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, blog));
     handleBlogUpdate({
       ...blog,
       isLoadingPosts: true,
+      featuredPost: null,
       posts: [],
     });
-
-    promise.then((response) => {
-      handleBlogUpdate({
+    
+    delayRequest({ posts: blog.posts })
+      .then((response) => handleBlogUpdate({
         ...blog,
         isLoadingPosts: false,
         posts: response.posts,
-      });
-    });
+        featuredPost: blog.posts.find(p => p.isFeatured)
+      }))
   };
 
   const getPostById = (id) => {
     const selectedPost = blog.posts.find((post) => `${post.id}` === `${id}`);
-    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, { post: selectedPost }));
     cleanFormPost(true);
-    promise.then(({ post }) => {
+    delayRequest({ post: selectedPost }).then(({ post }) => {
       handleBlogUpdate({
         ...blog,
         isLoadingCurrentPost: false,
@@ -48,9 +48,8 @@ const usePostsRequests = () => {
 
   const loadFormPost = (id) => {
     const selectedPost = blog.posts.find((post) => `${post.id}` === `${id}`);
-    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, { post: selectedPost }));
     cleanFormPost(true);
-    promise.then(({ post }) => {
+    delayRequest({ post: selectedPost }).then(({ post }) => {
       handleBlogUpdate({
         ...blog,
         isLoadingFormPost: false,
@@ -60,14 +59,13 @@ const usePostsRequests = () => {
   }
 
   const editPost = (post) => {
-    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, { post }));
     handleBlogUpdate({
       ...blog,
       isLoadingFormPost: true,
       formPost: post,
     });
 
-    promise.then(({ post }) => {
+    delayRequest({ post }).then(({ post }) => {
       handleBlogUpdate({
         ...blog,
         posts: [...blog.posts.map(p => p.id === post.id ? post : p)],
@@ -78,16 +76,13 @@ const usePostsRequests = () => {
   }
 
   const createPost = (post) => {
-    console.log(getNewPostId())
-    const newPost = {...post, id: getNewPostId()};
-    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, { post: newPost }));
     handleBlogUpdate({
       ...blog,
       isLoadingFormPost: true,
-      formPost: newPost,
     });
 
-    promise.then(({ post }) => {
+    const newPost = {...post, id: getNewPostId()};
+    delayRequest({ post: newPost }).then(({ post }) => {
       handleBlogUpdate({
         ...blog,
         posts: [...blog.posts, newPost],
@@ -98,13 +93,12 @@ const usePostsRequests = () => {
   }
 
   const deletePost = (id) => {
-    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, {}));
     handleBlogUpdate({
       ...blog,
       isLoadingPosts: true,
     });
 
-    promise.then(() => {
+    delayRequest({}).then(() => {
       handleBlogUpdate({
         ...blog,
         posts: [...blog.posts.filter(p => p.id !== id)],
@@ -114,21 +108,21 @@ const usePostsRequests = () => {
   }
 
   const getLatestNumberPost = () => {
-    const NUMBER_OF_LATEST_POSTS = 6;
-    const promise = new Promise((resolve) => resolveResponseInSomeTime(resolve, {
-      posts: blog.posts.slice(NUMBER_OF_LATEST_POSTS*-1)
-    }));
     handleBlogUpdate({
       ...blog,
       isLoadingLatestPosts: true,
       latestPosts: [],
+      featuredPost: null,
     });
-
-    promise.then((response) => {
+    
+    const NUMBER_OF_LATEST_POSTS = 6;
+    const latestPosts = blog.posts.filter(p => !p.isFeatured).slice(NUMBER_OF_LATEST_POSTS*-1);
+    delayRequest({ posts: latestPosts }).then((response) => {
       handleBlogUpdate({
         ...blog,
         isLoadingLatestPosts: false,
         latestPosts: response.posts,
+        featuredPost: blog.posts.find(p => p.isFeatured)
       });
     });
   };
@@ -141,6 +135,21 @@ const usePostsRequests = () => {
     });
   }
 
+  const setAsFeatured = (id) => {
+    handleBlogUpdate({
+      ...blog,
+      isLoadingPosts: true,
+    });
+
+    delayRequest({}).then(() => {
+      handleBlogUpdate({
+        ...blog,
+        posts: [...blog.posts.map(p => p.id === id ? {...p, isFeatured: true} : {...p, isFeatured: false})],
+        isLoadingPosts: false,
+      });
+    });
+  }
+
   return {
     editPost,
     createPost,
@@ -148,6 +157,7 @@ const usePostsRequests = () => {
     getAllPosts,
     getPostById,
     loadFormPost,
+    setAsFeatured,
     cleanFormPost,
     getLatestNumberPost,
   }

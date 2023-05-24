@@ -1,31 +1,31 @@
 import classNames from "classnames";
 import { Link } from "react-router-dom";
-import './styles.css';
-import { HeroImage } from "../HeroImage";
+import { FullWidthImage } from "../FullWidthImage";
+import { Tag } from "../Tag";
+import { AuthorThumbnail } from "../AuthorThumnail";
+import { TagList } from "../TagList";
 
 const PostCard = ({ post, horizontal = false }) => {
   if (!post) return null; 
-  const { id, title, featuredImage, author, tags, date } = post;
+  const { id, title, featuredImage, author, tags, date, excerpt } = post;
   return (
-    <div className={classNames("post-card", { horizontal })}>
-      <div className="post-card--image-wrapper">
-        <HeroImage imageURL={featuredImage} altText={title} />
-      </div>
-      <div className="post-card--info-wrapper">
-        <div>{tags && tags.map(t => <span key={`post_tag_${id}_${t}`}>{t}</span>)}</div>
-        <Link to={`/post/${id}`}>
-          <h3>{title}</h3>
+    <div className={classNames("flex", { "flex-col": !horizontal })}>
+      <div className={classNames("overflow-hidden rounded-3xl max-h-96", { "w-7/12": horizontal })}>
+        <Link to={`/blog/${id}`}>
+          <FullWidthImage imageURL={featuredImage} altText={title} />
         </Link>
-        <p>{title}</p>
+      </div>
+      <div className={classNames("flex flex-col mt-2", { "w-5/12 ml-5": horizontal })}>
+        <div className="mb-3 -ml-1">
+          <TagList tags={tags} blogId={id} />
+        </div>
+        <Link to={`/blog/${id}`}>
+          <h3 className={`${horizontal ? "text-4xl" : "text-2xl"} leading-tight font-semibold mb-4`}>{title}</h3>
+        </Link>
+        <p className="text-base leading-8 text-gray-500 font-normal w-10/12 mb-5">{excerpt}</p>
         {author && (
-          <div>
-            <div>
-              <img src={author.thumbnail} alt={author.name} />
-            </div>
-            <div>
-              <p>By {author.name}</p>
-              <small>{date}</small>
-            </div>
+          <div className="mt-auto mb-4">
+            <AuthorThumbnail author={author} smallText={date} />
           </div>
         )}
       </div>

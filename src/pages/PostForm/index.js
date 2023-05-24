@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { usePostForm } from "./usePostForm";
 import { useEffect } from "react";
+import { BlogBtn } from "../../components/BlogBtn";
 
 const PostForm = () => {
   const { id } = useParams();
@@ -12,13 +13,17 @@ const PostForm = () => {
 
   return (
     <div className="page-post-form">
-      <Link to="/dashboard">{`<`}Go back</Link>
+      <BlogBtn route="/dashboard" label={`${"<"} Go back`} />
       {isLoading && <p>Post {id} is being loaded...</p>}
       {post && (
         <form onSubmit={handleSubmit}>
           <div>
             <label>Title:</label>
             <input type="text" name="title" value={post.title} onChange={(e) => setValue(e.target.name, e.target.value)} />
+          </div>
+          <div>
+            <label>Excerpt:</label>
+            <input type="text" name="excerpt" value={post.excerpt} onChange={(e) => setValue(e.target.name, e.target.value)} />
           </div>
           <div>
             <label>Date:</label>
@@ -51,10 +56,10 @@ const PostForm = () => {
               <input type="text" name="authorThumbnail" value={post.author?.thumbnail} onChange={(e) => setValue(e.target.name, e.target.value)} />
             </div>
           </section>
-          <button type="submit">{isEditing ? "Update" : "Create"}</button>
+          <BlogBtn type="submit" label={isEditing ? "Update" : "Create"} />
+          <BlogBtn route="/dashboard" label="Cancel" inverted={true} />
         </form>
       )}
-      <Link to="/dashboard">{`<`}Go back</Link>
     </div>
   );
 }

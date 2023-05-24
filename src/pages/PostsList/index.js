@@ -1,24 +1,14 @@
-import { Link } from "react-router-dom";
 import { usePostsList } from "./usePostsList";
+import { PostsGrid } from "../../components/PostsGrid";
+import { HeroImage } from "../../components/HeroImage";
 
 const PostsList = () => {
   const { isLoading, posts } =  usePostsList();
 
   return (
     <div className="page-posts-list">
-      {isLoading && <p>Posts are being loaded...</p>}
-      {posts && posts.map(({ id, featuredImage, name, title, author }) => 
-        <div key={`post_item_${id}`}>
-          <Link to={`/blog/${id}`}>
-            <img src={featuredImage} alt={name} />
-          </Link>
-          <Link to={`/blog/${id}`}>
-            <h2>{title}</h2>
-          </Link>
-          <p>Written by: {author.name}</p>
-          <img src={author.thumbnail} alt={author.name} />
-        </div>
-      )}
+      <HeroImage imageURL="https://images.unsplash.com/photo-1423483641154-5411ec9c0ddf?auto=format&fit=crop&w=1600&h=600" altText="Hands with grapes" />
+      <PostsGrid isLoading={isLoading} posts={posts} />
     </div>
   );
 }

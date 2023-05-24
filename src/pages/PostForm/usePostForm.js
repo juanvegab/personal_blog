@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { redirect } from "react-router-dom";
 import { usePostsRequests } from "../../services/api/posts";
 import { BlogContext } from "../../services/state/BlogStateProvider";
 import { DEFAULT_POST_OBJECT } from "../../constants/stringConstants";
@@ -13,6 +12,7 @@ const usePostForm = () => {
   } = usePostsRequests();
   const [ post, setPost ] = useState();
   const { blog: {isLoadingFormPost, formPost} } = useContext(BlogContext);
+
   const loadPost = (id) => {
     setPost(DEFAULT_POST_OBJECT);
     cleanFormPost();
@@ -32,15 +32,11 @@ const usePostForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (post.id) {
-      console.log("EDIT: ", post);
       editPost(post);
       alert("Post successfully edited.");
-      redirect("/dashboard");
     } else {
-      console.log("CREATE: ", post);
       createPost(post);
       alert("Post successfully created.")
-      redirect("/dashboard");
     }
   }
 

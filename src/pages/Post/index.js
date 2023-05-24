@@ -2,6 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import { usePost } from "./usePost";
 import { useEffect } from "react";
 import { HeroImage } from "../../components/HeroImage";
+import { TagList } from "../../components/TagList";
+import { AuthorThumbnail } from "../../components/AuthorThumnail";
 
 const Post = () => {
   const { id } = useParams();
@@ -19,10 +21,19 @@ const Post = () => {
       {isLoading && <p>Post {id} is being loaded...</p>}
       {post && (
         <div>
+          <h3 className="text-5xl leading-tight font-semibold mb-4">{post.title}</h3>
+          <div className="flex flex-row justify-between">
+            {post.author && (
+              <div className="mt-auto mb-4">
+                <AuthorThumbnail author={post.author} smallText={post.date} />
+              </div>
+            )}
+            <div>
+              <TagList tags={post.tags} blogId={id} />
+            </div>
+          </div>
           <HeroImage imageURL={post.featuredImage} altText={post.title} />
-          <h2>{post.title}</h2>
-          <div>{post.tags.map(t => <span key={`tag_${t.trim()}`} style={{marginRight: '5px', border: '1px solid gray', borderRadius: '4px', padding: '2px'}}>{t}</span>)}</div>
-          <div dangerouslySetInnerHTML={{__html: post.content}}></div>
+          <div className="html-content mx-20 mt-10" dangerouslySetInnerHTML={{__html: post.content}}></div>
         </div>
       )}
       <Link to="/blog">{`<`}Go back</Link>
