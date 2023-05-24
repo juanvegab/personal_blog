@@ -1,9 +1,10 @@
 import { PostCard } from "../PostCard";
+import { Spinner } from "../Spinner";
 
 const PostsGrid = ({ isLoading, posts }) => {
   return (
     <div>
-      { isLoading && <p>Content is being loaded...</p> }
+      <Spinner isLoading={isLoading} />
       { posts && (
         <div className="mt-20">
           <div className="grid grid-cols-12 gap-5">

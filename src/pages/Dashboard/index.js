@@ -5,6 +5,7 @@ import { AuthorThumbnail } from "../../components/AuthorThumnail";
 import { BlogBtn } from "../../components/BlogBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt, faExternalLinkAlt, faPencilAlt, faCheck  } from '@fortawesome/free-solid-svg-icons';
+import { Spinner } from "../../components/Spinner";
 
 const Dashboard = () => {
   const { isLoading, posts, deletePost, setAsFeatured } =  useDashboard();
@@ -15,8 +16,8 @@ const Dashboard = () => {
         <h1 className="text-4xl font-semibold text-center my-4">Your posts collection</h1>
         <p className="text-center my-4 leading-8">Here you can manage all your posts, delete, edit create and set them as featured.</p>
       </div>
-      {isLoading && <p>Posts are being loaded...</p>}
       <BlogBtn route="new" label="Create Post" />
+      <Spinner isLoading={isLoading} />
       {!isLoading && posts && (
         <table className="rounded-xl overflow-hidden min-w-full text-left text-sm mb-20">
           <thead className="bg-neutral-100 text-center">

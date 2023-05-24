@@ -1,9 +1,12 @@
-import "./styles.css";
+import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { BlogsLogo } from "../BlogsLogo";
 import { MaxWidthContainer } from "../MaxWidthContainer";
+import { SearchTypeahead } from "../SearchTypeahead";
+import { BlogContext } from "../../services/state/BlogStateProvider";
 
 const Header = (props) => {
+  const { blog: { posts } } = useContext(BlogContext);
 
   return (
     <header className="component-header">
@@ -16,6 +19,7 @@ const Header = (props) => {
               key={`nav-link-${r.id}`}
               to={r.path}>{r.label}</NavLink>
             ) }
+            <SearchTypeahead items={posts} />
           </nav>
         </div>
       </MaxWidthContainer>
